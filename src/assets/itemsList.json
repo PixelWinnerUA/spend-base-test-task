@@ -1,0 +1,52 @@
+[{
+  "id": "1",
+  "type": "folder",
+  "name": "Root",
+  "accessLevel": 0,
+  "nestedItems": [
+    {
+      "id": "2",
+      "type": "folder",
+      "name": "Empty Folder",
+      "accessLevel": 0,
+      "nestedItems": []
+    },
+    {
+      "id": "3",
+      "type": "folder",
+      "name": "Folder with files",
+      "accessLevel": 1,
+      "nestedItems": [
+        {
+          "id": "5",
+          "type": "folder",
+          "name": "Another Folder",
+          "accessLevel": 0,
+          "nestedItems": [
+            {
+              "id": "6",
+              "type": "folder",
+              "name": "Folder",
+              "accessLevel": 1,
+              "nestedItems": []
+            }
+          ]
+        },
+        {
+          "id": "4",
+          "type": "file",
+          "name": "image",
+          "accessLevel": 0,
+          "extension": "jpg"
+        },
+        {
+          "id": "7",
+          "type": "file",
+          "name": "index",
+          "accessLevel": 1,
+          "extension": "js"
+        }
+      ]
+    }
+  ]
+}]

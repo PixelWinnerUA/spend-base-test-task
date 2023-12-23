@@ -1,0 +1,1 @@
+export const getFileLabel = (name: string, extension: string) => `${name}.${extension}`;
