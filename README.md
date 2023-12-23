@@ -1,30 +1,112 @@
-# React + TypeScript + Vite
+# Test Task
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Getting Started
 
-Currently, two official plugins are available:
+To set up dependencies:
+```bash
+npm install
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+To start the project:
+```bash
+npm run dev 
+```
 
-## Expanding the ESLint configuration
+## Q&A
+### Q: Знайти потенційно вразливі місця з точки зору продуктивності
+A: Проблемою може стати процес рендеру дерева папок та файлів у випадку їх великої кількості та вкладенності. Вирішити це може пагінація, або "stream" запит у разі використання серверного рендеренгу.
+Також можливо реалізувати пошук за ім'ям через запит до API.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### Q: Розібратися з функціоналом переміщення та видалення папок, файлів.
+A: Якщо розглядати приклад моєї структурі даних, то тут дуже просто розробити переміщення та видалення файлів з точки зору алгортиму.
+В мене є унікальний ідентифікатор, завдяки котрому можливо легко реалізувати видалення, або переміщення, посилаючиь на певний елемент у массиві за ідентифікатором, використовуючи рекурсію.
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
+```json
+{
+    "id": "3",
+        "type": "folder",
+        "name": "Folder with files",
+        "accessLevel": 1,
+        "nestedItems": [
+        {
+            "id": "4",
+            "type": "file",
+            "name": "image",
+            "accessLevel": 0,
+            "extension": "jpg"
+        },
+        {
+            "id": "7",
+            "type": "file",
+            "name": "index",
+            "accessLevel": 1,
+            "extension": "js"
+        }
+    ]
 }
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Приклад функції видалення:
+```js
+function deleteItemById(items, idToDelete) {
+    if (!items || !items.nestedItems) {
+        return;
+    }
+
+    for (let i = 0; i < items.nestedItems.length; i++) {
+        if (items.nestedItems[i].id === idToDelete) {
+            items.nestedItems.splice(i, 1);
+            return; 
+        }
+        
+        deleteItemById(items.nestedItems[i], idToDelete);
+    }
+}
+```
+
+Аналогічно переміщення:
+```js
+function findItemById(item, idToFind) {
+    if (item.id === idToFind) {
+        return item;
+    }
+
+    if (!item.nestedItems) {
+        return null;
+    }
+
+    for (let nestedItem of items.nestedItems) {
+        if (nestedItem.id === idToFind) {
+            return nestedItem;
+        }
+
+        const foundItem = findItemById(nestedItem, idToFind);
+        
+        if (foundItem) {
+            return foundItem;
+        }
+    }
+
+    return null;
+}
+
+
+function moveItemById(items, idToMove, newParentId) {
+    const itemToMove = findItemById(items, idToMove);
+    
+    if (!itemToMove || itemToMove.id === items.id) {
+        return;
+    }
+
+    deleteItemById(items, idToMove);
+    
+    const newParent = findItemById(items, newParentId);
+
+    
+    if (!newParent || !newParent.nestedItems) {
+        return;
+    }
+    
+    newParent.nestedItems.push(itemToMove);
+}
+```
